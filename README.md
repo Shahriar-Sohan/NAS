@@ -1,72 +1,88 @@
-# NAS Sync Tool
+# sync_engine
 
-A lightweight, C/C++-based file synchronization tool that mimics core NAS (Network Attached Storage) behavior. It monitors and synchronizes files from a source directory to a backup directory at a specified time interval.
+`sync_engine` is the core C module responsible for file synchronization logic in your NAS project. It handles efficient file comparison, copying, and folder syncing with performance in mind.
+
+---
 
 ## Features
 
-- 🔄 One-way file sync: copies newer source files to the backup location.
-- ⏱ Configurable sync interval using a simple config file.
-- 🧠 Smart copy: only syncs if the source file has been modified.
-- 🧵 Built using C for core performance and C++ for logic control.
-- 📦 Ready for CLI use and easy to extend into a daemon or service.
+- Compare source and destination files using file metadata (`stat`).
+- Copy files only if the source is newer, avoiding unnecessary writes.
+- Recursively sync folders with support for subdirectories.
+- Uses a dynamically allocated buffer (default 1MB) for high-performance file I/O.
+- Graceful error handling with detailed status codes.
 
-## Setup
+---
 
-### 1. Folder Structure
+## Files
 
-```
-NAS/
-├── main.cpp               # C++ logic to read config and run the loop
-├── config.txt             # Contains sync settings
-├── src/
-│   └── sync_engine.c      # File copy and comparison logic in C
-├── include/
-│   └── sync_engine.h      # Function declaration for sync logic
-```
+- `sync_engine.c` — Implementation of file sync functions.
+- `sync_engine.h` — Header file with function declarations and constants.
 
-### 2. Config File (`config.txt`)
+---
 
-```
-source=./data/source
-backup=./data/backup
-interval=5
-```
+## Main Functions
 
-- `source`: path to the folder or file to sync
-- `backup`: path where backup files should be copied
-- `interval`: time in seconds between sync checks
+### `int compare_and_copy(const char* src, const char* dst)`
 
-### 3. Compilation
+- Compares modification times of source and destination files.
+- Copies the source file to the destination if newer or missing.
+- Returns:
+  - `1` if file copied successfully
+  - `0` if no copy was necessary (destination up to date)
+  - Negative values on errors (e.g., -1 file missing, -2 open error)
 
-```bash
-g++ main.cpp src/sync_engine.c -Iinclude -o nas_app
-```
+### `int sync_folder(const char* source_dir, const char* backup_dir)`
 
-Or to remove warnings:
+- Recursively synchronizes all files and directories from source to backup.
+- Uses `compare_and_copy` internally.
+- Prints progress and sync status to the console.
+- Returns `0` on success or negative error codes.
+
+---
+
+## Buffer Size
+
+- Uses a **default buffer size of 1 MB** for file copying.
+- This can be modified by changing `DEFAULT_BUFFER_SIZE` in `sync_engine.c`.
+
+---
+
+## Compilation
+
+The `sync_engine` module is compiled alongside the main NAS application:
 
 ```bash
 gcc -c src/sync_engine.c -o sync_engine.o
 g++ main.cpp sync_engine.o -Iinclude -o nas_app
 ```
 
-### 4. Run
+---
 
-```bash
-./nas_app
-```
+## Usage
 
-Output will show sync status every N seconds based on your config.
+Your main NAS app (e.g., `main.cpp`) calls `sync_folder()` periodically based on a config interval. This module handles all the file I/O efficiently and prints syncing progress.
 
-## Coming Soon
+---
 
-- 📁 Folder sync (multiple files)
-- 📝 Logging to a file
-- 🚦 Ctrl+C handling
-- 🚀 Daemon mode for always-on syncing
+## Error Handling
+
+The module returns detailed error codes from file operations, which you can catch and log or display in your frontend or CLI.
+
+---
+
+## Future Improvements
+
+- Add file deletion syncing for true bidirectional sync.
+- Support for file versioning or conflict resolution.
+- Logging sync operations to a file instead of console.
+- Integration with a REST API backend for remote control.
+
+---
 
 ## License
 
-MIT — free to use and modify.
+MIT License — free to use, modify, and distribute.
 
 ---
 

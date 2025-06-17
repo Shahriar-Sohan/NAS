@@ -1,0 +1,53 @@
+
+
+# Compiled object files
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Libraries
+*.lib
+*.a
+*.so
+*.dll
+*.dylib
+
+# Build directories
+/build/
+/bin/
+/Debug/
+/Release/
+
+# IDE files
+.vscode/
+*.code-workspace
+*.idea/
+.vscode/
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Backup files
+*.bak
+
+# Other
+*.swp
