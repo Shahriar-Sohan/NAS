@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 int compare_and_copy(const char* src, const char* dst);
+int sync_folder(const char* source_dir, const char* backup_dir);
 
 #ifdef __cplusplus
 }

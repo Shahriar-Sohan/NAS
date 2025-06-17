@@ -35,7 +35,7 @@ int main(){
     std::cout << "Interval: " << interval << std::endl;
 
     while (true){
-        int result = compare_and_copy(source.c_str(), backup.c_str());
+        int result = sync_folder(source.c_str(), backup.c_str());
 
         if(result == 0){
             std::cout << "[✓] Synced successfully or already up-to-date.\n";
