@@ -3,7 +3,7 @@
 #include <string>
 #include <unistd.h>
 extern "C" {
-    #include "src/sync_engine.c"
+    #include "include/sync_engine.h"
 }
 
 int main(){

@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DEFAULT_BUFFER_SIZE (1024 * 1024)
 
@@ -21,7 +22,7 @@ int compare_and_copy(const char* src, const char* dst){
     int out = open(dst, O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if(in < 0 || out < 0) return -2;
 
-    char* buffer = malloc(DEFAULT_BUFFER_SIZE);
+    char* buffer = (char*)malloc(DEFAULT_BUFFER_SIZE);
     if(!buffer){
         close(in);
         close(out);
@@ -39,12 +40,13 @@ int compare_and_copy(const char* src, const char* dst){
             close(out);
             return -4;
         }
-        if(bytes_read < 0){
-            free(buffer);
-            close(in);
-            close(out);
-            return -5;
-        }
+    }
+
+    if(bytes_read < 0){
+        free(buffer);
+        close(in);
+        close(out);
+        return -5;
     }
 
     free(buffer);
